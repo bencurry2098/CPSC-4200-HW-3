@@ -1,4 +1,4 @@
-<svg onerror="(function(){
+<svg onload="(function(){
   const strip = s => (s||'').trim().replace(/[.,;:!?]+$/, '');
   const isValidSearchTerm = s =>
     typeof s === 'string' && s.trim().length > 0 && !/[<%]/.test(s) && /[A-Za-z0-9]/.test(s);
