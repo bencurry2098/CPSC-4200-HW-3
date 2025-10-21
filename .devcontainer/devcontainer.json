@@ -1,0 +1,15 @@
+{
+    "name": "EECS 388 Project 2",
+    "dockerComposeFile": "docker-compose.yml",
+    "service": "stealer",
+    "workspaceFolder": "/workspaces/project2",
+    "remoteUser": "eecs388",
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "ms-azuretools.vscode-docker",
+                "ms-python.python"
+            ]
+        }
+    }
+}

